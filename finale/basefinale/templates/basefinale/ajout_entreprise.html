@@ -1,0 +1,18 @@
+{% extends 'basefinale/main.html' %}
+{% block content %}
+
+<div class="header-bar">
+    <div>
+        <h1>Create a new company</h1>
+    </div>
+    <a href="{% url 'files' %}">Back to home</a>
+</div>
+
+
+<form method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" value="Create">
+</form>
+
+{% endblock content %}

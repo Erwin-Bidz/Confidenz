@@ -1,0 +1,52 @@
+{% extends 'basefinale/main.html' %}
+{% block content %}
+
+<div class="header-bar">
+   <div>
+       <h1>Hello {{request.user|title}}</h1>
+   </div>
+
+   {% if request.user.is_authenticated %}
+   <!--p><h3>{{request.user}}</h3></p-->
+   <a href="{% url 'logout' %}">Logout</a>
+   {% else %}
+   <a href="{% url 'login' %}">Login</a>
+   {% endif %}
+
+</div>
+
+
+<!--hr-->
+<h2>All Uploaded Files</h2>
+
+<table>
+   <tr>
+    <th>Those are:</th>
+   </tr>
+   <tr><th></th></tr>
+   <tr><th></th></tr>
+   <tr>
+      <td>Company</td>
+      <td>___File</td>
+   </tr>
+   {% for file in files %}
+   <tr>
+      <td>{{file.company}}</td>
+      <td><b>{{file.title}}</b></td>
+      <td><a href='{% url 'fichier' file.id %}'>View</a></td>
+   </tr>
+   {% empty %}
+        <h4><i>No file actually</i></h4>
+   {% endfor %}
+   <tr><th></th></tr>
+   <tr><th></th></tr>
+</table>
+
+
+<a href="{% url 'file_add' %}">Add a file</a>
+<p><a href="{% url 'new-employe' %}">Link yourself to a company</a></p>
+<p><a href="{% url 'company_add' %}">Create a new company</a></p>
+
+{% endblock content %}
+
+
