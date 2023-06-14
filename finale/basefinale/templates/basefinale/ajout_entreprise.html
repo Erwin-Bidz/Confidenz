@@ -5,14 +5,18 @@
     <div>
         <h1>Create a new company</h1>
     </div>
-    <a href="{% url 'files' %}">Back to home</a>
+    <h3><a href="{% url 'files' %}">Back to home</a></h3>
 </div>
 
+<p>.</p><p>.</p><p>.</p>
+<pre>
 
+    
+</pre>
 <form method="POST">
     {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value="Create">
+    <h2>{{form.as_p}}</h2>
+    <input class="button" type="submit" value="Create">
 </form>
 
 {% endblock content %}

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'django_filters',
+    'django.core.mail',
     'basefinale',
 ]
 
@@ -145,3 +146,10 @@ CORS_ALLOWED_ORIGINS = [
 
 MEDIA_ROOT = './media/'
 MEDIA_URL = '/media/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = 'CONFIDENZ erwin.bidzana@institutsaintjean.org'

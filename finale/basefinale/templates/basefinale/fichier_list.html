@@ -1,6 +1,18 @@
 {% extends 'basefinale/main.html' %}
 {% block content %}
 
+<style>
+   .middle {
+     text-align: center;
+   }
+
+   
+   /*.middle {
+     text-align: center;
+   }*/
+  
+</style>
+
 <div class="header-bar">
    <div>
        <h1>Hello {{request.user|title}}</h1>
@@ -8,44 +20,48 @@
 
    {% if request.user.is_authenticated %}
    <!--p><h3>{{request.user}}</h3></p-->
-   <a href="{% url 'logout' %}">Logout</a>
+   <h3><a href="{% url 'logout' %}">Logout</a></h3>
    {% else %}
    <a href="{% url 'login' %}">Login</a>
    {% endif %}
 
 </div>
 
+<p>.</p><p>.</p><p>.</p>
+<pre>
+
+</pre>
+<h4>
+   <a href="{% url 'file_add' %}">Add a file</a>
+   <p><a href="{% url 'new-employe' %}">Link yourself to a company</a></p>
+   <p><a href="{% url 'company_add' %}">Create a new company</a></p>
+</h4>
+
 
 <!--hr-->
 <h2>All Uploaded Files</h2>
-
-<table>
-   <tr>
-    <th>Those are:</th>
-   </tr>
-   <tr><th></th></tr>
-   <tr><th></th></tr>
-   <tr>
-      <td>Company</td>
-      <td>___File</td>
-   </tr>
+   
+   <h4>Those are:</h4>
+   
    {% for file in files %}
-   <tr>
-      <td>{{file.company}}</td>
-      <td><b>{{file.title}}</b></td>
-      <td><a href='{% url 'fichier' file.id %}'>View</a></td>
-   </tr>
+      <h2 class="middle">
+         <hr>
+         {% if file.favourite %}
+         <i class="star">&#9733;</i> {{file.company}}: <b>{{file.title}}</b>
+         {% else %}
+         {{file.company}}: <b>{{file.title}}</b>
+         {% endif %}
+         
+         <a class="a_view" href='{% url 'fichier' file.id %}'><b>&#x1F441;</b></a>
+         {% if request.user.id == file.user.id %}
+            <a class="a_green" href='{% url 'file_update' file.id %}'><b>&#9881;</b></a>
+            <a class="a_red" href='{% url 'file_delete' file.id %}'><b>&#128465;</b></a>            
+         {% endif %}
+      </h2>
    {% empty %}
         <h4><i>No file actually</i></h4>
    {% endfor %}
-   <tr><th></th></tr>
-   <tr><th></th></tr>
-</table>
 
-
-<a href="{% url 'file_add' %}">Add a file</a>
-<p><a href="{% url 'new-employe' %}">Link yourself to a company</a></p>
-<p><a href="{% url 'company_add' %}">Create a new company</a></p>
 
 {% endblock content %}
 

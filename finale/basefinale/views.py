@@ -18,8 +18,14 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import UserForm
 from django.contrib.auth import login
 
+from django.core.mail import send_mail
+
 from django.http import HttpResponse
 import openpyxl
+import json
+import io
+from openpyxl import load_workbook
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -89,31 +95,111 @@ class FileDetail(LoginRequiredMixin, DetailView):
     model = Fichier
     context_object_name = 'file'
 
+    #def get_context_data(self, **kwargs):
+    #    context = super().get_context_data(**kwargs)
+
+        # Charger le fichier Excel et extraire les données
+    #    file = self.object.content.path
+    #    wb = load_workbook(filename=file, read_only=True)
+    #    ws = wb.active
+    #    rows = []
+    #    for row in ws.iter_rows():
+    #        row_data = [cell.value for cell in row]
+    #        rows.append(row_data)
+    #    wb.close()
+
+        # Sérialiser les données en JSON et les ajouter au contexte
+    #    data = json.dumps(rows)
+    #    context['data'] = data
+
+    #    return context
+
+class FileContent(LoginRequiredMixin, DetailView):
+    model = Fichier
+    context_object_name = 'file'
+    template_name = 'basefinale/contenu.html'
+
+    def get(self, request, *args, **kwargs):
+        file = self.get_object()
+        wb = load_workbook(filename=file.content.path, read_only=True)
+        ws = wb.active
+        rows = []
+        for row in ws.iter_rows():
+            row_data = [cell.value for cell in row if cell.value is not None]
+            if any(row_data):  # only add non-empty rows
+                rows.append(row_data)
+        wb.close()
+        data = json.dumps(rows)
+        return JsonResponse(data, safe=False)
+
 class FileAdd(LoginRequiredMixin, CreateView):
     model = Fichier
-    fields = '__all__'
-    #fields = ['title', 'favourite', 'description']
+    fields = ['title', 'favourite', 'content', 'company']
     success_url = reverse_lazy('files') #renvoie à la liste des fichiers après l'upload d'un fichier
     template_name = 'basefinale/upload_fichier.html'
 
-    def upload_file(request):
-        if request.method == 'POST':
-            file = request.FILES['file']
-            wb = openpyxl.load_workbook(file)
-            ws = wb.active
-            data = []
-            for row in ws.iter_rows():
-                row_data = []
-                for cell in row:
-                    row_data.append(str(cell.value))
-                data.append('\t'.join(data))
-            file_data = '\n'.join(data)
-            response = HttpResponse(content_type='text/plain')
-            response['Content-Disposition'] = 'attachment; filename="data.txt"'
-            response.write(file_data)
-            return response
-        return render(request, 'upload_fichier.html')
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        result = super(FileAdd, self).form_valid(form)
 
+        # Récupérer le fichier uploadé par l'utilisateur
+    #    fichier = form.cleaned_data.get('content')
+        
+        # Charger le fichier avec openpyxl
+    #    wb = load_workbook(fichier, read_only=True)
+        
+        # Sélectionner la feuille de travail à extraire
+    #    ws = wb.active
+        
+        # Extraire les données de la feuille de travail
+    #    data = []
+    #    for row in ws.iter_rows(values_only=True):
+    #        data.append(row)
+        
+        # Fermer le fichier Excel
+    #    wb.close()
+        
+        # Retourner les données sous forme de JSON
+    #    return JsonResponse({'data': data})
+
+        # Envoi d'un mail à tous les utilisateurs
+        #subject = 'Nouveau fichier ajouté sur CONFIDENZ'
+        #message = "L'untilisateur {} a ajouté un nouveau fichier : {} . Pensez à le consulter".format(self.request.user.username, form.instance.title)
+        #from_email = 'erwinbidzana@gmail.com'
+        #recipient_list = [u.email for u in User.objects.all()]
+        #send_mail(subject, message, from_email, recipient_list)
+
+        return result
+
+    #def upload_file(request):
+    #    if request.method == 'POST':
+    #        file = request.FILES['file']
+    #        wb = openpyxl.load_workbook(file)
+    #        ws = wb.active
+    #        data = []
+    #        for row in ws.iter_rows():
+    #            row_data = []
+    #            for cell in row:
+    #                row_data.append(str(cell.value))
+    #            data.append('\t'.join(data))
+    #        file_data = '\n'.join(data)
+    #        response = HttpResponse(content_type='text/plain')
+    #        response['Content-Disposition'] = 'attachment; filename="data.txt"'
+    #        response.write(file_data)
+    #        return response
+    #    return render(request, 'upload_fichier.html')
+
+class FileDelete(LoginRequiredMixin, DeleteView):
+    model = Fichier
+    context_object_name = 'fichier'
+    success_url = reverse_lazy('files')
+    template_name = "basefinale/supprimer_fichier.html"
+
+class FileUpdate(LoginRequiredMixin, UpdateView):
+    model = Fichier
+    fields = ['title', 'favourite', 'content', 'company']
+    success_url = reverse_lazy('files')
+    template_name = 'basefinale/modifier_fichier.html'
 
 class CompanyAdd(LoginRequiredMixin, CreateView):
     model = Entreprise
