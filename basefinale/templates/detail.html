@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        
+        <div class="col-md-12">
+            <h1 class="text-center mt-2">Fichiers de 
+                {{ entreprise.name }}
+            </h1>
+
+            {% for fichier in liste_fichiers %}
+            <p>{{ fichier.title }}</p>
+            <hr>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,6 @@
+1- git init
+2- git remote add origin le lien https du repository
+3- git branch -M le nom de ta branche
+4- git add .
+5- git commit -m "ton message"
+6- git push -uf origin nomdetabranche

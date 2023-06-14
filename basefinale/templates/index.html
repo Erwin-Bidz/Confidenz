@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h1 class="text-center mt-4">CONFIDENZ</h1>
+      
+  <div class="container">
+        
+    <div class="row">
+
+      {% for entreprise in liste_entreprises %}
+        <div class="col-12 col-md-6 col-lg-3 col-xl-3">
+          <!-- Card -->
+          <div class="card">
+            <div class="card-body" style = "height : 240px">
+              <h5 class="card-title"> <a href="/fichier/{{ entreprise.id }}/">{{ entreprise.name }}</a></h5>
+              <p class="card-text">{{ entreprise.description }}</p>
+              <a href="/fichier/{{ entreprise.id }}/" class="btn btn-primary">Fichiers de {{ entreprise.name }}</a>
+            </div>
+          </div>
+          <!-- EndCard -->
+        </div>
+      {% endfor %}
+        
+    </div>
+
+  </div>
+
+{% endblock content %}

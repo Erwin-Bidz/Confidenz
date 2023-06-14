@@ -1,0 +1,30 @@
+{% for entreprise in liste_entreprises %}
+        <div class="col-12 col-md-6 col-lg-3 col-xl-3">
+          <!-- Card -->
+          <div class="card">
+            <div class="card-body" style = "height : 240px">
+              <h5 class="card-title"> <a href="{% url 'detail' entreprise.id %}">{{ entreprise.name }}</a></h5>
+              <p class="card-text">{{ entreprise.description }}</p>
+              <a href="{% url 'detail' entreprise.id %}" class="btn btn-primary">Fichiers de {{ entreprise.name }}</a>
+            </div>
+          </div>
+          <!-- EndCard -->
+        </div>
+      {% endfor %}
+
+
+
+
+      <div class="container">
+        <div class="row">
+            {% for fichier in liste_fichiers %}
+            <div class="col-md-12">
+                
+                <h1 class="text-center mt-2">Fichiers de 
+                    {{ fichier.company }}
+                </h1>
+                <p>{{ fichier.title }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>

@@ -1,0 +1,38 @@
+<!--Nav Bar-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'home' %}">Confidenz</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-mdb-toggle="collapse"
+        data-mdb-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link active" aria-current="page" href="#">Accueil</a>
+          <a class="nav-link" href="#">Admin</a>
+          <a class="nav-link" href="#">À propos</a>
+        </div>
+      </div>
+      <form class="d-flex input-group w-auto" action="{% url 'search' %}">
+        <input
+          type="search"
+          class="form-control rounded"
+          name="entreprise"
+          placeholder="Search"
+          aria-label="Search"
+          aria-describedby="search-addon"
+        />
+        <span class="input-group-text border-0" id="search-addon">
+          <i class="fas fa-search"></i>
+        </span>
+      </form>
+    </div>
+  </nav>
+  <!--Nav Bar-->
