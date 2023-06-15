@@ -5,12 +5,6 @@
    .middle {
      text-align: center;
    }
-
-   
-   /*.middle {
-     text-align: center;
-   }*/
-  
 </style>
 
 <div class="header-bar">
@@ -31,6 +25,12 @@
 <pre>
 
 </pre>
+
+<form class="middle" method="GET">
+   <input type="text" name="search-area" value="{{search_input}}">
+   <input type="submit" value="&#128269;">
+</form>   
+
 <h4>
    <a href="{% url 'file_add' %}">Add a file</a>
    <p><a href="{% url 'new-employe' %}">Link yourself to a company</a></p>

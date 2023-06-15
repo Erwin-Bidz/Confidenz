@@ -90,6 +90,23 @@ class FileList(LoginRequiredMixin, ListView):
     context_object_name = 'files'
     template_name = 'basefinale/fichier_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        #context['tasks'] = context['tasks'].filter(user=self.request.user)
+        #context['count'] = context['tasks'].filter(complete=False).count()
+        
+        ##Gestion de la recherche dans la page FileList
+        ##title__startswith=search_input si on veut les fichiers qui commencent par la valeur entrée
+        ##title__contains=search_input si on veut les fichiers contenant la valeur entrée
+
+        search_input = self.request.GET.get('search-area') or ''
+        if search_input:
+            context['files'] = context['files'].filter(title__contains=search_input)
+        
+        ##Conserver la valeur de la dernière recherche dans la barre de recherche
+        context['search_input'] = search_input
+        return context
+
 
 class FileDetail(LoginRequiredMixin, DetailView):
     model = Fichier
@@ -117,7 +134,7 @@ class FileDetail(LoginRequiredMixin, DetailView):
 class FileContent(LoginRequiredMixin, DetailView):
     model = Fichier
     context_object_name = 'file'
-    template_name = 'basefinale/contenu.html'
+    #template_name = 'basefinale/contenu.html'
 
     def get(self, request, *args, **kwargs):
         file = self.get_object()
@@ -125,12 +142,15 @@ class FileContent(LoginRequiredMixin, DetailView):
         ws = wb.active
         rows = []
         for row in ws.iter_rows():
-            row_data = [cell.value for cell in row if cell.value is not None]
+            row_data = [cell.value for cell in row]
             if any(row_data):  # only add non-empty rows
                 rows.append(row_data)
         wb.close()
-        data = json.dumps(rows)
-        return JsonResponse(data, safe=False)
+        #data = json.dumps(rows)
+        data = rows
+        context = {'data': data}
+        return render(request, 'basefinale/contenu.html', context)
+        #return JsonResponse(data, safe=False)
 
 class FileAdd(LoginRequiredMixin, CreateView):
     model = Fichier

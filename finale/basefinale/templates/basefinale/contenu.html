@@ -1,5 +1,12 @@
 {% extends 'basefinale/main.html' %}
 {% block content %}
+
+<style>
+  .middle {
+    text-align: center;
+  }
+</style>
+
 <div class="header-bar">
     <div>
         <h1>Content of {{file}}</h1>
@@ -12,6 +19,13 @@
 
     
 </pre>
+<h3 class="middle">
+{% for item in data %}
+  
+  <p>{{item}}</p>
+  
+{% endfor %}
+</h3>
 
 <div id="data"></div>
 
