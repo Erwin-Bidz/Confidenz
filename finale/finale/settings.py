@@ -147,6 +147,13 @@ CORS_ALLOWED_ORIGINS = [
 MEDIA_ROOT = './media/'
 MEDIA_URL = '/media/'
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://appname.herokuapp.com'
+    'http://localhost:8100',
+    'http://localhost:8000',
+    'http://localhost:4200',
+]
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

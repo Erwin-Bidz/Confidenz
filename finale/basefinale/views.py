@@ -24,6 +24,7 @@ from django.http import HttpResponse
 import openpyxl
 import json
 import io
+import os
 from openpyxl import load_workbook
 from django.http import JsonResponse
 
@@ -38,31 +39,43 @@ class PageLogin(LoginView):
     def get_success_url(self):
         return reverse_lazy('files')
 
-class RegisterPage(View):
-    #template_name = 'basefinale/register.html'
-    #form_class = UserCreationForm
-    #model = User
-    #fields = ['username', 'password', 'email']
+class RegisterPage(FormView):
+    template_name = 'basefinale/register.html'
+    form_class = UserCreationForm
+    model = User
+    #fields = ['username', 'password1', 'password2', 'email']
     redirect_authenticated_user = True
-    #success_url = reverse_lazy('files')
-
-    def get(self, request):
-        form = UserForm()
-        return render(request, 'basefinale/register.html', {'form': form})
-
-    def post(self, request):
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('files')
-        return render(request, 'basefinale/register.html', {'form': form})
-
+    success_url = reverse_lazy('files')
 
     def form_valid(self, form):
         user = form.save()
         if user is not None:
             login(self.request, user)
         return super(RegisterPage, self).form_valid(form)
+        ##S'assurer ici que l'utilisateur est authentifié
+
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect('files')
+        return super(RegisterPage, self).get(*args, **kwargs)
+
+    #def get(self, request):
+    #    form = UserForm()
+    #    return render(request, 'basefinale/register.html', {'form': form})
+
+    #def post(self, request):
+    #    form = UserCreationForm(request.POST)
+    #    if form.is_valid():
+    #        form.save()
+    #        return redirect('files')
+    #    return render(request, 'basefinale/register.html', {'form': form})
+
+
+    #def form_valid(self, form):
+    #    user = form.save()
+    #    if user is not None:
+    #        login(self.request, user)
+    #    return super(RegisterPage, self).form_valid(form)
 
 class FichierViewSet(viewsets.ModelViewSet):
 
@@ -138,19 +151,32 @@ class FileContent(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         file = self.get_object()
-        wb = load_workbook(filename=file.content.path, read_only=True)
-        ws = wb.active
-        rows = []
-        for row in ws.iter_rows():
-            row_data = [cell.value for cell in row]
-            if any(row_data):  # only add non-empty rows
-                rows.append(row_data)
-        wb.close()
-        #data = json.dumps(rows)
-        data = rows
-        context = {'data': data}
-        return render(request, 'basefinale/contenu.html', context)
-        #return JsonResponse(data, safe=False)
+
+        #filename = "mon_fichier.xlsx"
+        filename = file.content.path
+        extension = os.path.splitext(filename)[1]
+            
+        if extension == ".xls" or extension == ".xlsx":
+            print("Le fichier est un fichier Excel")
+            wb = load_workbook(filename=file.content.path, read_only=True)
+            ws = wb.active
+            rows = []
+            for row in ws.iter_rows():
+                row_data = [cell.value for cell in row]
+                if any(row_data):  # only add non-empty rows
+                    rows.append(row_data)
+            wb.close()
+            #data = json.dumps(rows)
+            data = rows
+            context = {'data': data}
+            return render(request, 'basefinale/contenu.html', context)
+        else:
+            print("Le fichier n'est pas un fichier Excel")
+            image = file.content
+            context = False
+            #return render(request, 'basefinale\templates\basefinale\fichier_detail.html')
+
+       
 
 class FileAdd(LoginRequiredMixin, CreateView):
     model = Fichier
